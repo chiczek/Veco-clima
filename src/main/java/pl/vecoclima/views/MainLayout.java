@@ -30,7 +30,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 import pl.vecoclima.views.kontakt.KontaktView;
 import pl.vecoclima.views.oferta.OfertaView;
 import pl.vecoclima.views.sklep.SklepView;
-import pl.vecoclima.views.stronagłówna.StronagłównaView;
+import pl.vecoclima.views.stronagłówna.StronaGlownaView;
 import pl.vecoclima.views.zarządzanie.ZarządzanieView;
 
 /**
@@ -104,7 +104,7 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Strona główna", LineAwesomeIcon.HOME_SOLID.create(), StronagłównaView.class), //
+                new MenuItemInfo("Strona główna", LineAwesomeIcon.HOME_SOLID.create(), StronaGlownaView.class), //
 
                 new MenuItemInfo("Oferta", LineAwesomeIcon.ARTSTATION.create(), OfertaView.class), //
 

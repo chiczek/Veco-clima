@@ -24,3 +24,20 @@ header nav a[highlight] span {
 header nav a[highlight] {
   background-color: var(--lumo-primary-color-10pct);
 }
+
+.center {
+  background-color: #808080;
+      color: white;
+      margin-top: 50px;
+
+      padding-top: 40px;
+      width: 70%;
+}
+
+.padding30 {
+    padding-left: 30%;
+}
+
+.padding30 vaadin-button::part(label) {
+    color:white;
+}

@@ -2,13 +2,11 @@ package pl.vecoclima;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
-import javax.sql.DataSource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
-import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
-import org.springframework.context.annotation.Bean;
-import pl.vecoclima.data.service.SamplePersonRepository;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
 /**
  * The entry point of the Spring Boot application.
@@ -17,7 +15,11 @@ import pl.vecoclima.data.service.SamplePersonRepository;
  * and some desktop browsers.
  *
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        DataSourceAutoConfiguration.class,
+        DataSourceTransactionManagerAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class
+})
 @Theme(value = "veco-clima")
 public class Application implements AppShellConfigurator {
 
@@ -25,18 +27,5 @@ public class Application implements AppShellConfigurator {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
-            SqlInitializationProperties properties, SamplePersonRepository repository) {
-        // This bean ensures the database is only initialized when empty
-        return new SqlDataSourceScriptDatabaseInitializer(dataSource, properties) {
-            @Override
-            public boolean initializeDatabase() {
-                if (repository.count() == 0L) {
-                    return super.initializeDatabase();
-                }
-                return false;
-            }
-        };
-    }
+
 }

@@ -6,10 +6,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
-import pl.vecoclima.data.entity.Person;
-import pl.vecoclima.data.entity.Product;
-import pl.vecoclima.data.entity.ShoppingCart;
-import pl.vecoclima.data.entity.ShoppingCartLine;
+import pl.vecoclima.data.entity.*;
 
 import java.util.Properties;
 
@@ -25,7 +22,7 @@ public class HibernateConnection {
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                settings.put(Environment.URL, "jdbc:sqlserver://127.0.0.1\\SQLEXPRESS:1433;;databaseName=Testowa;trustServerCertificate=true");
+                settings.put(Environment.URL, "jdbc:sqlserver://LOCALHOST\\SQLEXPRESS:1433;databaseName=Testowa;encrypt=true;trustServerCertificate=true");
                 settings.put(Environment.USER, "maciek");
                 settings.put(Environment.PASS, "maciek");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.SQLServer2012Dialect");
@@ -39,9 +36,7 @@ public class HibernateConnection {
                 configuration.addAnnotatedClass(Person.class);
                 configuration.addAnnotatedClass(ShoppingCart.class);
                 configuration.addAnnotatedClass(ShoppingCartLine.class);
-
-
-
+                configuration.addAnnotatedClass(Order.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
 

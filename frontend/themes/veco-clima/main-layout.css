@@ -34,6 +34,13 @@ header nav a[highlight] {
       width: 70%;
 }
 
+.centerOnly {
+
+   vertical-align: center;
+     text-align: center;
+
+}
+
 .padding30 {
     padding-left: 30%;
 }

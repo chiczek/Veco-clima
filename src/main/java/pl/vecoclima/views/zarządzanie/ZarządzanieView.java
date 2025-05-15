@@ -7,12 +7,14 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.SucceededEvent;
 import com.vaadin.flow.component.upload.Upload;
@@ -42,7 +44,30 @@ public class ZarządzanieView extends VerticalLayout {
         setSpacing(false);
         setSizeFull();
 
-        add(getProductManagementLayout());
+        addPasswordPane();
+
+    }
+
+    private void addPasswordPane() {
+        VerticalLayout vl = new VerticalLayout();
+        vl.setSizeFull();
+        vl.addClassName("centerOnly");
+        vl.add(new Paragraph("Ta część naszej strony przeznaczona jest dla pracowników."));
+        PasswordField pf = new PasswordField("Hasło pracownika:");
+        vl.add(pf);
+        Button login = new Button("Zaloguj", click -> {
+            if(pf.getValue().equals("Alamakota1!")){
+                removeAll();
+                add(getProductManagementLayout());
+            }
+            else{
+                Notification.show("Nieprawidłowe poświadczenia.").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                pf.setValue("");
+            }
+        });
+        login.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        vl.add(login);
+        add(vl);
     }
 
     private VerticalLayout getProductManagementLayout() {
@@ -122,7 +147,7 @@ public class ZarządzanieView extends VerticalLayout {
         dropEnabledUpload.setVisible(false);
         AtomicReference<Image> image = new AtomicReference<>();
 
-        Label dropLabel = new Label("Images files only");
+        Paragraph dropLabel = new Paragraph("Images files only");
         dropEnabledUpload.setDropLabel(dropLabel);
         dropEnabledUpload.setWidth("100%");
         dropEnabledUpload.setMaxFileSize(300 * 1024 * 1024);

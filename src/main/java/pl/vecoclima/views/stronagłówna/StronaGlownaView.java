@@ -112,7 +112,7 @@ public class StronaGlownaView extends Composite<VerticalLayout> {
 
         ul.add(createListItem("Obszar działania", "Nasza siedziba jest w Halinowie (powiat Miński), ale obszarem naszego działania jest cały powiat miński oraz Warszawa. " +
                 "Zachęcamy do wysłania do nas zapytania o bezpłatną wycenę."));
-        ul.add(createListItem("Adres email", "adam.kowieski@gmail.com"));
+        ul.add(createListItem("Adres email", "veco.clima@gmail.com"));
         ul.add(createListItem("Adres do korespondencji", "Halinów 05-074, ul. 3 Maja 15 G"));
 
         aside.add(headerSection, ul);

@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name="[dbo].[Product]")
+@Table(name="[Product]")
 
 public class Product {
 

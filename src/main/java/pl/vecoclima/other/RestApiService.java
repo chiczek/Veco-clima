@@ -1,6 +1,8 @@
 package pl.vecoclima.other;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.page.Page;
+import com.vaadin.flow.server.VaadinSession;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.vecoclima.data.entity.ShoppingCart;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
@@ -44,17 +47,18 @@ public class RestApiService {
 
         String json = new JSONObject()
                 .put("customerIp", "127.0.0.1")
-                .put("notifyUrl", "http://localhost:8081/paymentStatus")
-                .put("merchantPosId", "469610")
-                .put("description", "Veco Clima Order opi")
+                .put("notifyUrl", "https://veco-clima.pl/paymentStatus")
+                .put("merchantPosId", "469935")
+                .put("description", "Cart: " + cart.getId())
                 .put("currencyCode", "PLN")
                 .put("totalAmount", total.get())
-                //.put("extOrderId", "Mój numer zamowienia")
+                .put("continueURL", "https://veco-clima.pl/kontakt")
+                //.put("extOrderId", "Mój numer zamowienia " + LocalDate.now().hashCode())
                 .put("buyer", new JSONObject()
-                        .put("email", "jakis.klient@example.com")
-                        .put("phone", "654111654")
-                        .put("firstName", "Adam")
-                        .put("lastName", "Doe")
+                        .put("email", cart.getCreatedBy().getEmail())
+                        .put("phone", cart.getCreatedBy().getPhone())
+                        .put("firstName", cart.getCreatedBy().getFirstName())
+                        .put("lastName", cart.getCreatedBy().getLastName())
                         .put("language", "pl")
                 )
                 .put("products", products)
@@ -72,6 +76,7 @@ public class RestApiService {
         httpPost.addHeader("Content-Type", "application/json");
         String token = getTokenFromPayU();
         httpPost.addHeader("Authorization", "Bearer " + token);
+        httpPost.addHeader("continueURL", "https://veco-clima.pl/kontakt");
 
         StringEntity stringEntity = new StringEntity(createJson(cart));
         httpPost.getRequestLine();
@@ -97,11 +102,11 @@ public class RestApiService {
     public String getTokenFromPayU() throws UnsupportedEncodingException {
         final String url = "https://secure.snd.payu.com/pl/standard/user/oauth/authorize";
         final HttpPost httpPost = new HttpPost(url);
-        String id = "469610";
-        String secret = "9ac570393d5d1687d7bea9132e067203";
+        String id = "469935";
+        String secret = "316ad2c42b7cd2a639a44c40bf1e2ec3";
         httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        StringEntity stringEntity = new StringEntity("grant_type=client_credentials&client_id=469610&client_secret=9ac570393d5d1687d7bea9132e067203");
+        StringEntity stringEntity = new StringEntity("grant_type=client_credentials&client_id="+id+"&client_secret="+secret);
         httpPost.getRequestLine();
         httpPost.setEntity(stringEntity);
 
@@ -126,7 +131,11 @@ public class RestApiService {
 
     @RequestMapping(value = "/paymentStatus", method = RequestMethod.POST)
     public ResponseEntity<Object> createProduct(@RequestBody String reply) {
+        System.out.println("-----------REPLY-----------");
         System.out.println(reply);
+        System.out.println("-----------END REPLY-----------");
+
+
         return new ResponseEntity<>("okPayment", HttpStatus.OK);
     }
 

@@ -136,7 +136,7 @@ public class KontaktView extends VerticalLayout {
         ul.addClassNames("list-none", "m-0", "p-0", "flex", "flex-col", "gap-m");
 
         ul.add(createListItem("Numer telefonu", "+48 792 798 879"));
-        ul.add(createListItem("Adres email", "adam.kowieski@gmail.com"));
+        ul.add(createListItem("Adres email", "veco.clima@gmail.com"));
         ul.add(createListItem("Adres do korespondencji", "Halinów 05-074, ul. 3 Maja 15 G"));
 
         aside.add(headerSection, ul);

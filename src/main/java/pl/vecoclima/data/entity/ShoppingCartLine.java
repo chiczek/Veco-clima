@@ -7,12 +7,12 @@ import org.hibernate.query.Query;
 import pl.vecoclima.HibernateConnection;
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name="dbo.[ShoppingCartLine]")
+@Table(name="[ShoppingCartLine]")
 public class ShoppingCartLine {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

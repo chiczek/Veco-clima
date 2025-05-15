@@ -1,6 +1,6 @@
 package pl.vecoclima.data.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Session;
@@ -9,8 +9,8 @@ import pl.vecoclima.HibernateConnection;
 
 import java.util.List;
 
-@Entity
-@Table(name="dbo.[Person]")
+@javax.persistence.Entity
+@javax.persistence.Table(name="[Person]")
 public class Person {
 
     @Id
@@ -26,10 +26,11 @@ public class Person {
     @Column (name="buildingNumber") @Getter @Setter private String buildingNumber;
     @Column (name="city") @Getter @Setter private String city;
     @Column (name="isAdmin") @Getter @Setter private boolean admin;
+    @Column (name="phone") @Getter @Setter private String phone;
 
     public Person(){}
 
-    public Person(String email, String firstName, String lastName, String postalCode, String street, String buildingNumber, String city, boolean admin) {
+    public Person(String email, String firstName, String lastName, String postalCode, String street, String buildingNumber, String city, boolean admin, String phone) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,6 +39,7 @@ public class Person {
         this.buildingNumber = buildingNumber;
         this.city = city;
         this.admin = admin;
+        this.phone = phone;
     }
 
     public void update(){
@@ -46,11 +48,12 @@ public class Person {
         session.beginTransaction().commit();
         session.close();
     }
-    public void insert(){
+    public int insert(){
         Session session = HibernateConnection.getSessionFactory().openSession();
-        session.save(this);
+        int id = (Integer) session.save(this);
         session.beginTransaction().commit();
         session.close();
+        return id;
     }
     public void delete(){
         Session session = HibernateConnection.getSessionFactory().openSession();

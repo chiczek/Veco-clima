@@ -25,9 +25,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.wontlost.ckeditor.Constants;
 import com.wontlost.ckeditor.VaadinCKEditor;
 import com.wontlost.ckeditor.VaadinCKEditorBuilder;
-import pl.vecoclima.data.entity.Product;
-import pl.vecoclima.data.entity.ShoppingCart;
-import pl.vecoclima.data.entity.ShoppingCartLine;
+import pl.vecoclima.data.entity.*;
 import pl.vecoclima.other.RestApiService;
 import pl.vecoclima.views.MainLayout;
 
@@ -370,19 +368,19 @@ public class SklepView extends VerticalLayout {
         d.open();
         d.setCloseOnOutsideClick(false);
 
-        Label l1 = new Label("Twój koszyk");
+        Paragraph l1 = new Paragraph("Twój koszyk");
         ProgressBar pb1 = new ProgressBar();
         VerticalLayout v1 = new VerticalLayout(l1, pb1);
         pb1.setValue(1.0f);
         pb1.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
 
-        Label l2 = new Label("Podsumowanie i płatność");
+        Paragraph l2 = new Paragraph("Podsumowanie i płatność");
         ProgressBar pb2 = new ProgressBar();
         VerticalLayout v2 = new VerticalLayout(l2, pb2);
         pb2.setValue(0.0f);
         pb2.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
 
-        Label l3 = new Label("Gotowe");
+        Paragraph l3 = new Paragraph("Gotowe");
         ProgressBar pb3 = new ProgressBar();
         VerticalLayout v3 = new VerticalLayout(l3, pb3);
         pb3.setValue(0.0f);
@@ -494,15 +492,28 @@ public class SklepView extends VerticalLayout {
 
         H4 addressData = new H4("Date adresowe");
         TextField street = new TextField("Ulica");
+        street.setRequired(true);
+        street.setRequiredIndicatorVisible(true);
         TextField buildingNumber = new TextField("Numer budynku / mieszkania");
+        buildingNumber.setRequired(true);
+        buildingNumber.setRequiredIndicatorVisible(true);
         TextField postalCode = new TextField("Kod pocztowy");
+        postalCode.setRequired(true);
+        postalCode.setRequiredIndicatorVisible(true);
         TextField city = new TextField("Miejscowość");
+        city.setRequired(true);
+        city.setRequiredIndicatorVisible(true);
+        TextField phone = new TextField("Numer telefonu");
+        phone.setRequired(true);
+        phone.setRequiredIndicatorVisible(true);
 
         TextArea details = new TextArea("Uwagi do zamówienia");
         details.setWidthFull();
 
         H4 paymentForm = new H4("Metoda płatności");
         RadioButtonGroup<String> paymentFormOptions = new RadioButtonGroup<>();
+        paymentFormOptions.setRequired(true);
+        paymentFormOptions.setRequiredIndicatorVisible(true);
         paymentFormOptions.setItems("Karta kredytowa", "Blik", "Szybki przelew", "Raty");
 
         Button previous = new Button("Wróć do koszyka", click -> {
@@ -514,10 +525,31 @@ public class SklepView extends VerticalLayout {
 
 
         Button next = new Button("Przejdź do płatności", click -> {
-            try {
-                new RestApiService().submit(sessionCart);
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+            if(name.getValue().length() > 0 && surname.getValue().length() > 0 && email.getValue().length() > 6 && street.getValue().length() > 0
+            && buildingNumber.getValue().length() > 0 && postalCode.getValue().length() == 6 && city.getValue().length() > 2 && paymentFormOptions.getValue() != null) {
+                try {
+                    Person client = new Person(email.getValue(), name.getValue(), surname.getValue(),
+                            postalCode.getValue(), street.getValue(), buildingNumber.getValue(), city.getValue(), false, phone.getValue());
+                    int idClient = client.insert();
+
+                    client.setId(idClient);
+                    System.out.println("id client " + idClient);
+
+                    sessionCart.setCreatedBy(client);
+
+                    int idCart = sessionCart.insert();
+                    System.out.println("id cart " + idCart);
+                    sessionCart.setId(idCart);
+                    Order order = new Order(""+Order.findLastNumber() + 1, LocalDateTime.now(), paymentFormOptions.getValue(), "Złożone - nieopłacone", client, sessionCart, details.getValue());
+                    new RestApiService().submit(sessionCart);
+                    order.insert();
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else{
+
+                Notification.show("Wprowadzono niepełne dane formularza. Sprawdź poprawność danych i spróbuj ponownie.").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
         next.setIcon(VaadinIcon.ARROW_RIGHT.create());
@@ -526,7 +558,7 @@ public class SklepView extends VerticalLayout {
         HorizontalLayout buts2 = new HorizontalLayout(previous, next);
 
         d1.add(name, surname, email);
-        d2.add(street, buildingNumber, postalCode, city);
+        d2.add(street, buildingNumber, postalCode, city, phone);
         d3.add(paymentFormOptions);
         form.add(personalDataLabel, d1, addressData, d2, details, paymentForm, d3, buts2);
         part2.add(form);

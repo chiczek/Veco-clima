@@ -7,14 +7,15 @@ import org.hibernate.query.Query;
 import pl.vecoclima.HibernateConnection;
 
 
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name="dbo.[ShoppingCart]")
+@Table(name="[ShoppingCart]")
 public class ShoppingCart {
 
     @Id
@@ -27,7 +28,7 @@ public class ShoppingCart {
 
     @OneToMany(mappedBy="shoppingCart")
     private Set<ShoppingCartLine> items;
-    public @Getter @Setter ArrayList<ShoppingCartLine> shoppingCartLines;
+    @Transient public @Getter @Setter ArrayList<ShoppingCartLine> shoppingCartLines;
 
     public ShoppingCart(){
         shoppingCartLines = new ArrayList<>();
@@ -45,11 +46,12 @@ public class ShoppingCart {
         session.beginTransaction().commit();
         session.close();
     }
-    public void insert(){
+    public Integer insert(){
         Session session = HibernateConnection.getSessionFactory().openSession();
-        session.save(this);
+        int id = (Integer) session.save(this);
         session.beginTransaction().commit();
         session.close();
+        return id;
     }
     public void delete(){
         Session session = HibernateConnection.getSessionFactory().openSession();
